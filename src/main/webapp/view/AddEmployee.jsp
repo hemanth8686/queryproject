@@ -98,7 +98,13 @@ th {
 								href="homeMenu">Back</a></td>
 
 				
-				</tr>			
+				</tr>
+					<tr>
+		<td ><a
+								href="homeMenu">Back</a></td>
+
+				
+				</tr>					
 		</table>
 		</div>
 
