@@ -25,6 +25,8 @@ public interface QueryDao  {
 	
 	public List<EmployeeModel> getTOEmail();
 	public List<EmployeeModel> getCCEmail();
+	public List<String> toEmailtest();
+	public List<String> ccEmailtest();
 	
 
 }

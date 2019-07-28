@@ -25,8 +25,12 @@ public interface QueryJpa extends CrudRepository<QueryModel, Integer> {
 	public int maxId();
 	@Transactional 
 	@Modifying
-	@Query("update QueryModel u set u.closedDate = :closedDate, u.closedBy = :completedBy,u.status=:status,u.queryStatus=1 where u.queryId = :Id")
-	public void updateQuery(@Param("Id") int Id,@Param("completedBy") String completedBy,@Param("closedDate") Date closedDate, @Param("status") String status);
+	@Query("update QueryModel u  set u.queryStatus= :queryStatus, u.closedDate = :closedDate, u.closedBy = :completedBy,u.status=:status where u.queryId = :Id")
+	public void updateQueryCompleted(@Param("Id") int Id,@Param("completedBy") String completedBy,@Param("closedDate") Date closedDate, @Param("status") String status,@Param("queryStatus") int queryStatus);
+	@Transactional 
+	@Modifying
+	@Query("update QueryModel u set u.queryStatus= :queryStatus, u.closedDate = :closedDate, u.closedBy = :completedBy,u.status=:status where u.queryId = :Id")
+	public void updateQueryPending(@Param("Id") int Id,@Param("completedBy") String completedBy,@Param("closedDate") Date closedDate, @Param("status") String status,@Param("queryStatus") int queryStatus);
 	
 	@Query("from QueryModel where queryId=:Id " )
 	public List<QueryModel> getQueryId( @Param("Id") int Id);

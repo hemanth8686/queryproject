@@ -145,7 +145,7 @@ public class QueryDaoImpl implements QueryDao {
 	public void addEmployee(String employeeName, String employeeMail, String mailType) {
 		EmployeeModel employeeModel=new EmployeeModel();
 		employeeModel.setEmployeeName(employeeName);
-		employeeModel.setEmployeeMail(employeeMail);
+		employeeModel.setEmployeeMail(employeeMail+",");
 		employeeModel.setMailType(mailType);
 		employeeModel.setStatus(1);
 		employeeJpa.save(employeeModel);
@@ -160,9 +160,19 @@ public class QueryDaoImpl implements QueryDao {
 	@Transactional 
 	public String updateQuery(int  Id,String closedBy,String closedDate,String status) {
 		  Date closedDateQuery;
+		  System.out.println(status+"statusstatus");
 		try {
 			closedDateQuery = new SimpleDateFormat("yyyy-MM-dd").parse(closedDate);
-			queryJpa.updateQuery(Id, closedBy, closedDateQuery, status);
+			if (status.equalsIgnoreCase("completed")) {
+				int queryStatus=1;
+				queryJpa.updateQueryCompleted(Id, closedBy, closedDateQuery, status,queryStatus);
+				
+			}
+			else {
+				int queryStatus=2;
+				queryJpa.updateQueryPending(Id, closedBy, closedDateQuery, status,queryStatus);
+			}
+			
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -193,6 +203,17 @@ public class QueryDaoImpl implements QueryDao {
 	public List<EmployeeModel> getCCEmail() {
 		// TODO Auto-generated method stub
 		return employeeJpa.getEmployeeListCC();
+	}
+	@Override
+	public List<String> toEmailtest(){
+		return employeeJpa.getEmployeeListToTest();
+		
+	}
+
+	@Override
+	public List<String> ccEmailtest() {
+		// TODO Auto-generated method stub
+		return employeeJpa.getEmployeeListCcTest();
 	}
 	
 	

@@ -5,6 +5,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<style type="text/css">
+body {
+  background-image: url("https://png.pngtree.com/thumb_back/fw800/back_pic/04/55/96/305864ee4494d9f.JPG");
+}
+</style>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
 </head>
@@ -32,7 +37,7 @@
 					<tr class="tabcontent">
 						<td></td>
 					<tr>
-					<td><input type="text" name="Id" value="<c:out value="${dlist.queryId}" />"></td>
+					<td><input type="text" style="border:none"  name="Id" value="<c:out value="${dlist.queryId}" />"></td>
 
 
 						<td nowrap="nowrap"><fmt:formatDate pattern="dd-MM-yyyy"
@@ -65,6 +70,14 @@
     
 <tr align="center" ><td colspan="1"><input type="submit" value="sumit query"></td></tr>
     </table>
+    
+    
+    <table>
+		<td ><a
+								href="homeMenu">Back</a>
+
+							</td>
+		</table>
 </form>
 
 </body>

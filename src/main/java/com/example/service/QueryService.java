@@ -34,6 +34,8 @@ public interface QueryService {
 	public void deleteQuery(int Id);
 	public List<EmployeeModel> getTOEmail();
 	public List<EmployeeModel> getCCEmail();
+	public List<String> toEmailtestTo();
+	public List<String> toEmailtestCc();
 	
 	
 		

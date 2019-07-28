@@ -5,6 +5,27 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style type="text/css">
+body {
+  background-color: gray;
+}
+body {
+  background-image: url("https://png.pngtree.com/thumb_back/fw800/back_pic/04/55/96/305864ee4494d9f.JPG");
+}
+
+.button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+</style>
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
 </head>
@@ -37,9 +58,9 @@
 </td>
 
 
-<td>Query/Enhanchement:
+<!-- <td>Query/Enhanchement:
  <textarea rows="4" cols="50" name="query">
-</textarea> 
+</textarea>  -->
 <td>	ATTENTEDBY:	<select name='attentedBy'>
     <c:forEach items="${employeeList}" var="dlist">
             <option value="${dlist.employeeName}">${dlist.employeeName}</option>
@@ -56,7 +77,7 @@
 
 <select name="status">
 <option value="pending">Pending</option>
-<option value="completed">COMPLETED</option>
+<option value="completed">Completed</option>
 </select>
 </td>
 <td>Priority:
@@ -70,10 +91,32 @@
 
 
 </tr>
+<tr></tr>
 
-<tr align="center" ><td colspan="1"><input type="submit" value="sumit query"></td></tr>
+<tr></tr>
+<tr></tr>
+
 
 </table>
+<table >
+<tr align="right"  ><td colspan="3">Query/Enhanchement:</td>
+<td align="left"> <textarea rows="4" cols="50" name="query">
+</textarea></td> </tr>
+</table>
+<table>
+
+<tr  ><td colspan="10" rowspan="5" align="center"><input type="submit" value="sumit"></td></tr>
+
+</table>
+
+	<table>
+		<tr>
+		<td ><a
+								href="homeMenu">Back</a></td>
+
+				
+				</tr>			
+		</table>
 </form>
 
 </body>

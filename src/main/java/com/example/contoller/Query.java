@@ -2,6 +2,7 @@ package com.example.contoller;
 
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +32,10 @@ public class Query {
 
 	@Autowired
 	private QueryService queryService;
+	
+	@Autowired
+	private JobQuery jobQuery;
+	
 
 	@RequestMapping(value = "menu")
 	public ModelAndView menu() {
@@ -175,5 +180,12 @@ public class Query {
 		return "menu";
 
 }
+	
+	
+	@RequestMapping(value="updateExcel")
+	public String updateExcel() throws IOException {
+		jobQuery.createExcelByClick();
+		return "menu";
+	}
 
 }

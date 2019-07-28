@@ -8,6 +8,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style type="text/css">
+body {
+  background-image: url("https://png.pngtree.com/thumb_back/fw800/back_pic/04/55/96/305864ee4494d9f.JPG");
+}
+</style>
 
 <link href="style.css" rel="stylesheet" type="text/css">
 <title>Table V04</title>
@@ -238,10 +243,12 @@ TD {
 		</table>
 		
 		<table>
+		<tr>
 		<td ><a
-								href="homeMenu">Back</a>
+								href="homeMenu">Back</a></td>
 
-							</td>
+				
+				</tr>			
 		</table>
 
 

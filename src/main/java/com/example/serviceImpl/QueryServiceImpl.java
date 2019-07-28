@@ -90,4 +90,16 @@ public class QueryServiceImpl implements QueryService {
 		return queryDao.getCCEmail();
 	}
 
+	@Override
+	public List<String> toEmailtestTo() {
+		// TODO Auto-generated method stub
+		return queryDao.toEmailtest();
+	}
+
+	@Override
+	public List<String> toEmailtestCc() {
+		// TODO Auto-generated method stub
+		return queryDao.ccEmailtest();
+	}
+
 }

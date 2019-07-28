@@ -35,6 +35,7 @@ public class QueryModel {
 	
 	
 	
+	
 	public int getQueryStatus() {
 		return queryStatus;
 	}
