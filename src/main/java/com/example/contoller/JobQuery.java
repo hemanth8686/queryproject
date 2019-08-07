@@ -49,10 +49,10 @@ public class JobQuery {
 
 	private static final String FILE_NAME = "E://New folder//test.xlsx";
 
-	@Scheduled(cron = "10 56 *	*  * * * ", zone = "Asia/Colombo")
+	/*@Scheduled(cron = "10 56 *	*  * * * ", zone = "Asia/Colombo")*/
 	public void createExcel() throws IOException {
 		ArrayList<Object[]> test = new ArrayList<Object[]>();
-		List<QueryModel> queryReportForExcel = queryService.getQueryReportForExcel();
+		List<QueryModel> queryReportForExcel = queryService.getQueryReportForExcel(0);
 		Date date3 = null;
 		String closedDateExcel = "";
 		int queryStatus = 0;
@@ -255,321 +255,17 @@ public class JobQuery {
 	 * }
 	 */
 
-	@Scheduled(cron = "11 09 *	*  * * * ", zone = "Asia/Colombo")
+	@Scheduled(cron = "07 31 *	*  * * * ", zone = "Asia/Colombo")
 	public void test() throws IOException {
 
-		int status = 0;
-		int queryStatus = 0;
-		String[] columns = { "Client", "Raised On", "Queries/Enhancements", "Raised By", "Raised through",
-				"Attended By", "Comments", "Closed By", "Closed On" };
-		Workbook workbook = new XSSFWorkbook(); // new HSSFWorkbook() for generating `.xls` file
-
-		/*
-		 * CreationHelper helps us create instances of various things like DataFormat,
-		 * Hyperlink, RichTextString etc, in a format (HSSF, XSSF) independent way
-		 */
-		CreationHelper createHelper = workbook.getCreationHelper();
-
-		// Create a Sheet
-		Sheet sheet = workbook.createSheet("HMS & DMS Queries");
-		Header header = sheet.getHeader();
-		header.setCenter("HMS Support/Development Queries");
-		header.setLeft("Open - Yellow 	Closed - Green");
-
-		CellStyle style = workbook.createCellStyle();
-		style.setFillForegroundColor(IndexedColors.GREEN.getIndex());
-		style.setBorderBottom(style.BORDER_THIN);
-		style.setBorderRight(style.BORDER_THIN);
-		style.setBorderLeft(style.BORDER_THIN);
-		style.setBorderTop(style.BORDER_THIN);
-		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-		Font font = workbook.createFont();
-		font.setColor(IndexedColors.BLACK.getIndex());
-		style.setFont(font);
-
-		CellStyle style1 = workbook.createCellStyle();
-		style1.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
-		style1.setFillPattern(CellStyle.SOLID_FOREGROUND);
-		style1.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
-		style1.setBorderBottom(style.BORDER_THIN);
-		style1.setBorderRight(style.BORDER_THIN);
-		style1.setBorderLeft(style.BORDER_THIN);
-		style1.setBorderTop(style.BORDER_THIN);
-		Font font1 = workbook.createFont();
-		font1.setColor(IndexedColors.YELLOW.getIndex());
-		style1.setFont(font);
-
-		CellStyle style2 = workbook.createCellStyle();
-		style2.setFillForegroundColor(IndexedColors.SKY_BLUE.getIndex());
-		style2.setFillPattern(CellStyle.SOLID_FOREGROUND);
-		style2.setFillForegroundColor(IndexedColors.SKY_BLUE.getIndex());
-		style2.setBorderBottom(style.BORDER_THIN);
-		style2.setBorderRight(style.BORDER_THIN);
-		style2.setBorderLeft(style.BORDER_THIN);
-		style2.setBorderTop(style.BORDER_THIN);
-		Font font2 = workbook.createFont();
-		font2.setColor(IndexedColors.BLACK.getIndex());
-		style2.setFont(font);
-
-		List<QueryModel> queryReportForExcelCondition = queryService.getQueryReportForExcel();
-		for (QueryModel queryModel : queryReportForExcelCondition) {
-			status = queryModel.getQueryStatus();
-		}
-
-		if (status == 2) {
-
-			System.out.println("in if");
-
-			Font headerFont = workbook.createFont();
-			headerFont.setBold(true);
-			headerFont.setFontHeightInPoints((short) 14);
-			headerFont.setColor(IndexedColors.BROWN.getIndex());
-
-			// Create a CellStyle with the font
-			CellStyle headerCellStyle = workbook.createCellStyle();
-			headerCellStyle.setFont(headerFont);
-
-			// Create a Row
-			Row headerRow = sheet.createRow(0);
-
-			// Create cells
-			for (int i = 0; i < columns.length; i++) {
-				Cell cell = headerRow.createCell(i);
-				cell.setCellValue(columns[i]);
-				cell.setCellStyle(headerCellStyle);
-			}
-
-			// Create Cell Style for formatting Date
-			CellStyle dateCellStyle = workbook.createCellStyle();
-			dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
-
-			// Create Other rows and cells with employees data
-			int rowNum = 1;
-
-			List<QueryModel> queryReportForExcel = queryService.getQueryReportForExcel();
-			for (QueryModel employee : queryReportForExcel) {
-
-				queryStatus = employee.getQueryStatus();
-
-				if (queryStatus == 1) {
-					Row row = sheet.createRow(rowNum++);
-
-					row.createCell(0).setCellValue(employee.getClient());
-
-					java.util.Date raisedDate = employee.getRaisedDate();
-					java.util.Date closedDate = employee.getClosedDate();
-					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
-					String raisedDateExcel = dateFormat.format(raisedDate);
-					String closedDateExcel = dateFormat.format(closedDate);
-					row.createCell(1).setCellValue(raisedDateExcel);
-
-					row.createCell(2).setCellValue(employee.getQuery());
-					row.createCell(3).setCellValue(employee.getRaisedBy());
-					row.createCell(4).setCellValue(employee.getRaisedThrough());
-					row.createCell(5).setCellValue(employee.getAttentedBy());
-					row.createCell(6).setCellValue(employee.getStatus());
-					row.createCell(7).setCellValue(employee.getClosedBy());
-
-					row.createCell(8).setCellValue(closedDateExcel);
-
-					/*
-					 * Cell dateOfBirthCell = row.createCell(2);
-					 * dateOfBirthCell.setCellValue(employee.getRaisedDate());
-					 * dateOfBirthCell.setCellStyle(dateCellStyle);
-					 * 
-					 * row.createCell(3).setCellValue(employee.getQuery()); row.setRowStyle(style);
-					 * Cell cell = row.getCell(0); Cell cell1 = row.getCell(1);
-					 * 
-					 * Cell cell2 = row.getCell(2); Cell cell3 = row.getCell(3);
-					 */
-					Cell cell = row.getCell(0);
-					Cell cell1 = row.getCell(1);
-
-					Cell cell2 = row.getCell(2);
-					Cell cell3 = row.getCell(3);
-					Cell cell4 = row.getCell(4);
-					Cell cell5 = row.getCell(5);
-					Cell cell6 = row.getCell(6);
-					Cell cell7 = row.getCell(7);
-					Cell cell8 = row.getCell(8);
-					cell.setCellStyle(style);
-					cell1.setCellStyle(style);
-					cell2.setCellStyle(style);
-					cell3.setCellStyle(style);
-					cell4.setCellStyle(style);
-					cell5.setCellStyle(style);
-					cell6.setCellStyle(style);
-					cell7.setCellStyle(style);
-					cell8.setCellStyle(style);
-
-				} else if (queryStatus == 3) {
-					Row row = sheet.createRow(rowNum++);
-					java.util.Date raisedDate = employee.getRaisedDate();
-					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
-					String raisedDateExcel = dateFormat.format(raisedDate);
-
-					row.createCell(0).setCellValue(employee.getClient());
-
-					Cell dateOfBirthCell = row.createCell(1);
-					dateOfBirthCell.setCellValue(raisedDateExcel);
-					dateOfBirthCell.setCellStyle(dateCellStyle);
-					row.createCell(2).setCellValue(employee.getQuery());
-					row.createCell(3).setCellValue(employee.getRaisedBy());
-					row.createCell(4).setCellValue(employee.getRaisedThrough());
-					row.createCell(5).setCellValue(employee.getAttentedBy());
-					row.createCell(6).setCellValue(employee.getStatus());
-					row.createCell(7).setCellValue(employee.getClosedBy());
-					row.createCell(8).setCellValue("");
-
-					/*
-					 * Cell dateOfBirthCell = row.createCell(2);
-					 * dateOfBirthCell.setCellValue(employee.getRaisedDate());
-					 * dateOfBirthCell.setCellStyle(dateCellStyle);
-					 * 
-					 * row.createCell(3).setCellValue(employee.getQuery()); row.setRowStyle(style);
-					 * Cell cell = row.getCell(0); Cell cell1 = row.getCell(1);
-					 * 
-					 * Cell cell2 = row.getCell(2); Cell cell3 = row.getCell(3);
-					 */
-					Cell cell = row.getCell(0);
-					Cell cell1 = row.getCell(1);
-
-					Cell cell2 = row.getCell(2);
-					Cell cell3 = row.getCell(3);
-					Cell cell4 = row.getCell(4);
-					Cell cell5 = row.getCell(5);
-					Cell cell6 = row.getCell(6);
-					Cell cell7 = row.getCell(7);
-					Cell cell8 = row.getCell(8);
-					cell.setCellStyle(style2);
-					cell1.setCellStyle(style2);
-					cell2.setCellStyle(style2);
-					cell3.setCellStyle(style2);
-					cell4.setCellStyle(style2);
-					cell5.setCellStyle(style2);
-					cell6.setCellStyle(style2);
-					cell7.setCellStyle(style2);
-
-					cell8.setCellStyle(style2);
-
-				}
-
-				else {
-					Row row = sheet.createRow(rowNum++);
-					java.util.Date raisedDate = employee.getRaisedDate();
-					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
-					String raisedDateExcel = dateFormat.format(raisedDate);
-
-					row.createCell(0).setCellValue(employee.getClient());
-
-					Cell dateOfBirthCell = row.createCell(1);
-					dateOfBirthCell.setCellValue(raisedDateExcel);
-					dateOfBirthCell.setCellStyle(dateCellStyle);
-					row.createCell(2).setCellValue(employee.getQuery());
-					row.createCell(3).setCellValue(employee.getRaisedBy());
-					row.createCell(4).setCellValue(employee.getRaisedThrough());
-					row.createCell(5).setCellValue(employee.getAttentedBy());
-					row.createCell(6).setCellValue(employee.getStatus());
-					row.createCell(7).setCellValue(employee.getClosedBy());
-					row.createCell(8).setCellValue("");
-
-					/*
-					 * Cell dateOfBirthCell = row.createCell(2);
-					 * dateOfBirthCell.setCellValue(employee.getRaisedDate());
-					 * dateOfBirthCell.setCellStyle(dateCellStyle);
-					 * 
-					 * row.createCell(3).setCellValue(employee.getQuery()); row.setRowStyle(style);
-					 * Cell cell = row.getCell(0); Cell cell1 = row.getCell(1);
-					 * 
-					 * Cell cell2 = row.getCell(2); Cell cell3 = row.getCell(3);
-					 */
-					Cell cell = row.getCell(0);
-					Cell cell1 = row.getCell(1);
-
-					Cell cell2 = row.getCell(2);
-					Cell cell3 = row.getCell(3);
-					Cell cell4 = row.getCell(4);
-					Cell cell5 = row.getCell(5);
-					Cell cell6 = row.getCell(6);
-					Cell cell7 = row.getCell(7);
-					Cell cell8 = row.getCell(8);
-					cell.setCellStyle(style1);
-					cell1.setCellStyle(style1);
-					cell2.setCellStyle(style1);
-					cell3.setCellStyle(style1);
-					cell4.setCellStyle(style1);
-					cell5.setCellStyle(style1);
-					cell6.setCellStyle(style1);
-					cell7.setCellStyle(style1);
-
-					cell8.setCellStyle(style1);
-
-				}
-
-				// Resize all columns to fit the content size
-				for (int i = 0; i < columns.length; i++) {
-					sheet.autoSizeColumn(i);
-				}
-
-			}
-			// Create a Font for styling header cells
-			/*
-			 * Font headerFont = workbook.createFont(); headerFont.setBold(true);
-			 * headerFont.setFontHeightInPoints((short) 14);
-			 * headerFont.setColor(IndexedColors.RED.getIndex());
-			 * 
-			 * // Create a CellStyle with the font CellStyle headerCellStyle =
-			 * workbook.createCellStyle(); headerCellStyle.setFont(headerFont);
-			 * 
-			 * // Create a Row Row headerRow = sheet.createRow(0);
-			 * 
-			 * // Create cells for(int i = 0; i < columns.length; i++) { Cell cell =
-			 * headerRow.createCell(i); cell.setCellValue(columns[i]);
-			 * cell.setCellStyle(headerCellStyle); }
-			 * 
-			 * // Create Cell Style for formatting Date CellStyle dateCellStyle =
-			 * workbook.createCellStyle();
-			 * dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat(
-			 * "dd-MM-yyyy"));
-			 * 
-			 * // Create Other rows and cells with employees data int rowNum = 1;
-			 * 
-			 * List<QueryModel> queryReportForExcel = queryService.getQueryReportForExcel();
-			 * for(QueryModel employee: queryReportForExcel) { Row row =
-			 * sheet.createRow(rowNum++);
-			 * 
-			 * row.createCell(0) .setCellValue(employee.getClient());
-			 * 
-			 * row.createCell(1) .setCellValue(employee.getQuery());
-			 * 
-			 * Cell dateOfBirthCell = row.createCell(2);
-			 * dateOfBirthCell.setCellValue(employee.getRaisedDate());
-			 * dateOfBirthCell.setCellStyle(dateCellStyle);
-			 * 
-			 * row.createCell(3) .setCellValue(employee.getQuery()); }
-			 * 
-			 * // Resize all columns to fit the content size for(int i = 0; i <
-			 * columns.length; i++) { sheet.autoSizeColumn(i); }
-			 */
-			// Write the output to a file
-			FileOutputStream out = new FileOutputStream(new File("E://New folder//CountriesDetails.xlsx"));
-			workbook.write(out);
-			out.close();
-
-			// Closing the workbook
-			workbook.close();
-		}
-	}
-
-	public void createExcelByClick() throws IOException {
 
 		int status = 0;
 		int queryStatus = 0;
 		String[] columns = { "Client", "Raised On", "Queries/Enhancements", "Raised By", "Raised through",
 				"Attended By", "Comments", "Closed By", "Closed On" };
 		Workbook workbook = new XSSFWorkbook(); // new HSSFWorkbook() for generating `.xls` file
+		System.out.println("in create");
 
-		
 		CreationHelper createHelper = workbook.getCreationHelper();
 
 		Sheet sheet = workbook.createSheet("HMS & DMS Queries");
@@ -612,66 +308,47 @@ public class JobQuery {
 		font2.setColor(IndexedColors.BLACK.getIndex());
 		style2.setFont(font);
 
-		List<QueryModel> queryReportForExcelCondition = queryService.getQueryReportForExcel();
+		List<QueryModel> queryReportForExcelCondition = queryService.getQueryReportForExcel(0);
 		for (QueryModel queryModel : queryReportForExcelCondition) {
 			status = queryModel.getQueryStatus();
 
-
-			if (status == 2) {
-
-
+			
 				Font headerFont = workbook.createFont();
 				headerFont.setBold(true);
 				headerFont.setFontHeightInPoints((short) 14);
 				headerFont.setColor(IndexedColors.BROWN.getIndex());
-
 				CellStyle headerCellStyle = workbook.createCellStyle();
 				headerCellStyle.setFont(headerFont);
-
 				Row headerRow = sheet.createRow(0);
-
 				for (int i = 0; i < columns.length; i++) {
 					Cell cell = headerRow.createCell(i);
 					cell.setCellValue(columns[i]);
 					cell.setCellStyle(headerCellStyle);
 				}
-
-				// Create Cell Style for formatting Date
 				CellStyle dateCellStyle = workbook.createCellStyle();
 				dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
-
-				// Create Other rows and cells with employees data
 				int rowNum = 1;
-
-				List<QueryModel> queryReportForExcel = queryService.getQueryReportForExcel();
+				List<QueryModel> queryReportForExcel = queryService.getQueryReportForExcel(0);
 				for (QueryModel employee : queryReportForExcel) {
-
 					queryStatus = employee.getQueryStatus();
-
 					if (queryStatus == 1) {
 						Row row = sheet.createRow(rowNum++);
-
 						row.createCell(0).setCellValue(employee.getClient());
-
 						java.util.Date raisedDate = employee.getRaisedDate();
 						java.util.Date closedDate = employee.getClosedDate();
 						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
 						String raisedDateExcel = dateFormat.format(raisedDate);
 						String closedDateExcel = dateFormat.format(closedDate);
 						row.createCell(1).setCellValue(raisedDateExcel);
-
 						row.createCell(2).setCellValue(employee.getQuery());
 						row.createCell(3).setCellValue(employee.getRaisedBy());
 						row.createCell(4).setCellValue(employee.getRaisedThrough());
 						row.createCell(5).setCellValue(employee.getAttentedBy());
 						row.createCell(6).setCellValue(employee.getStatus());
 						row.createCell(7).setCellValue(employee.getClosedBy());
-
 						row.createCell(8).setCellValue(closedDateExcel);
-
 						Cell cell = row.getCell(0);
 						Cell cell1 = row.getCell(1);
-
 						Cell cell2 = row.getCell(2);
 						Cell cell3 = row.getCell(3);
 						Cell cell4 = row.getCell(4);
@@ -688,7 +365,224 @@ public class JobQuery {
 						cell6.setCellStyle(style);
 						cell7.setCellStyle(style);
 						cell8.setCellStyle(style);
+					} else if (queryStatus == 3) {
+						Row row = sheet.createRow(rowNum++);
+						java.util.Date raisedDate = employee.getRaisedDate();
+						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+						String raisedDateExcel = dateFormat.format(raisedDate);
 
+						row.createCell(0).setCellValue(employee.getClient());
+
+						Cell dateOfBirthCell = row.createCell(1);
+						dateOfBirthCell.setCellValue(raisedDateExcel);
+						dateOfBirthCell.setCellStyle(dateCellStyle);
+						row.createCell(2).setCellValue(employee.getQuery());
+						row.createCell(3).setCellValue(employee.getRaisedBy());
+						row.createCell(4).setCellValue(employee.getRaisedThrough());
+						row.createCell(5).setCellValue(employee.getAttentedBy());
+						row.createCell(6).setCellValue(employee.getStatus());
+						row.createCell(7).setCellValue(employee.getClosedBy());
+						row.createCell(8).setCellValue("");
+
+						
+						Cell cell = row.getCell(0);
+						Cell cell1 = row.getCell(1);
+
+						Cell cell2 = row.getCell(2);
+						Cell cell3 = row.getCell(3);
+						Cell cell4 = row.getCell(4);
+						Cell cell5 = row.getCell(5);
+						Cell cell6 = row.getCell(6);
+						Cell cell7 = row.getCell(7);
+						Cell cell8 = row.getCell(8);
+						cell.setCellStyle(style2);
+						cell1.setCellStyle(style2);
+						cell2.setCellStyle(style2);
+						cell3.setCellStyle(style2);
+						cell4.setCellStyle(style2);
+						cell5.setCellStyle(style2);
+						cell6.setCellStyle(style2);
+						cell7.setCellStyle(style2);
+
+						cell8.setCellStyle(style2);
+
+					}
+
+					else {
+						Row row = sheet.createRow(rowNum++);
+						java.util.Date raisedDate = employee.getRaisedDate();
+						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+						String raisedDateExcel = dateFormat.format(raisedDate);
+
+						row.createCell(0).setCellValue(employee.getClient());
+
+						Cell dateOfBirthCell = row.createCell(1);
+						dateOfBirthCell.setCellValue(raisedDateExcel);
+						dateOfBirthCell.setCellStyle(dateCellStyle);
+						row.createCell(2).setCellValue(employee.getQuery());
+						row.createCell(3).setCellValue(employee.getRaisedBy());
+						row.createCell(4).setCellValue(employee.getRaisedThrough());
+						row.createCell(5).setCellValue(employee.getAttentedBy());
+						row.createCell(6).setCellValue(employee.getStatus());
+						row.createCell(7).setCellValue(employee.getClosedBy());
+						row.createCell(8).setCellValue("");
+
+						Cell cell = row.getCell(0);
+						Cell cell1 = row.getCell(1);
+
+						Cell cell2 = row.getCell(2);
+						Cell cell3 = row.getCell(3);
+						Cell cell4 = row.getCell(4);
+						Cell cell5 = row.getCell(5);
+						Cell cell6 = row.getCell(6);
+						Cell cell7 = row.getCell(7);
+						Cell cell8 = row.getCell(8);
+						cell.setCellStyle(style1);
+						cell1.setCellStyle(style1);
+						cell2.setCellStyle(style1);
+						cell3.setCellStyle(style1);
+						cell4.setCellStyle(style1);
+						cell5.setCellStyle(style1);
+						cell6.setCellStyle(style1);
+						cell7.setCellStyle(style1);
+
+						cell8.setCellStyle(style1);
+
+					}
+
+					// Resize all columns to fit the content size
+					for (int i = 0; i < columns.length; i++) {
+						sheet.autoSizeColumn(i);
+					}
+
+				}
+			}
+			
+
+			try {
+				FileOutputStream out = new FileOutputStream(new File("E:\\New folder\\queries.xlsx"));
+				workbook.write(out);
+				out.flush();
+				out.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			System.out.println("Done");
+			System.out.println("in out");		
+			
+	}
+
+	public void createExcelByClick() throws IOException {
+
+		int status = 0;
+		int queryStatus = 0;
+		String[] columns = { "Client", "Raised On", "Queries/Enhancements", "Raised By", "Raised through",
+				"Attended By", "Comments", "Closed By", "Closed On" };
+		Workbook workbook = new XSSFWorkbook(); // new HSSFWorkbook() for generating `.xls` file
+		System.out.println("in create");
+
+		CreationHelper createHelper = workbook.getCreationHelper();
+
+		Sheet sheet = workbook.createSheet("HMS & DMS Queries");
+		Header header = sheet.getHeader();
+		header.setCenter("HMS Support/Development Queries");
+		header.setLeft("Open - Yellow 	Closed - Green");
+
+		CellStyle style = workbook.createCellStyle();
+		style.setFillForegroundColor(IndexedColors.GREEN.getIndex());
+		style.setBorderBottom(style.BORDER_THIN);
+		style.setBorderRight(style.BORDER_THIN);
+		style.setBorderLeft(style.BORDER_THIN);
+		style.setBorderTop(style.BORDER_THIN);
+		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		Font font = workbook.createFont();
+		font.setColor(IndexedColors.BLACK.getIndex());
+		style.setFont(font);
+
+		CellStyle style1 = workbook.createCellStyle();
+		style1.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+		style1.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		style1.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+		style1.setBorderBottom(style.BORDER_THIN);
+		style1.setBorderRight(style.BORDER_THIN);
+		style1.setBorderLeft(style.BORDER_THIN);
+		style1.setBorderTop(style.BORDER_THIN);
+		Font font1 = workbook.createFont();
+		font1.setColor(IndexedColors.YELLOW.getIndex());
+		style1.setFont(font);
+
+		CellStyle style2 = workbook.createCellStyle();
+		style2.setFillForegroundColor(IndexedColors.SKY_BLUE.getIndex());
+		style2.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		style2.setFillForegroundColor(IndexedColors.SKY_BLUE.getIndex());
+		style2.setBorderBottom(style.BORDER_THIN);
+		style2.setBorderRight(style.BORDER_THIN);
+		style2.setBorderLeft(style.BORDER_THIN);
+		style2.setBorderTop(style.BORDER_THIN);
+		Font font2 = workbook.createFont();
+		font2.setColor(IndexedColors.BLACK.getIndex());
+		style2.setFont(font);
+
+		List<QueryModel> queryReportForExcelCondition = queryService.getQueryReportForExcel(0);
+		for (QueryModel queryModel : queryReportForExcelCondition) {
+			status = queryModel.getQueryStatus();
+
+			
+				Font headerFont = workbook.createFont();
+				headerFont.setBold(true);
+				headerFont.setFontHeightInPoints((short) 14);
+				headerFont.setColor(IndexedColors.BROWN.getIndex());
+				CellStyle headerCellStyle = workbook.createCellStyle();
+				headerCellStyle.setFont(headerFont);
+				Row headerRow = sheet.createRow(0);
+				for (int i = 0; i < columns.length; i++) {
+					Cell cell = headerRow.createCell(i);
+					cell.setCellValue(columns[i]);
+					cell.setCellStyle(headerCellStyle);
+				}
+				CellStyle dateCellStyle = workbook.createCellStyle();
+				dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+				int rowNum = 1;
+				List<QueryModel> queryReportForExcel = queryService.getQueryReportForExcel(0);
+				for (QueryModel employee : queryReportForExcel) {
+					queryStatus = employee.getQueryStatus();
+					if (queryStatus == 1) {
+						Row row = sheet.createRow(rowNum++);
+						row.createCell(0).setCellValue(employee.getClient());
+						java.util.Date raisedDate = employee.getRaisedDate();
+						java.util.Date closedDate = employee.getClosedDate();
+						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+						String raisedDateExcel = dateFormat.format(raisedDate);
+						String closedDateExcel = dateFormat.format(closedDate);
+						row.createCell(1).setCellValue(raisedDateExcel);
+						row.createCell(2).setCellValue(employee.getQuery());
+						row.createCell(3).setCellValue(employee.getRaisedBy());
+						row.createCell(4).setCellValue(employee.getRaisedThrough());
+						row.createCell(5).setCellValue(employee.getAttentedBy());
+						row.createCell(6).setCellValue(employee.getStatus());
+						row.createCell(7).setCellValue(employee.getClosedBy());
+						row.createCell(8).setCellValue(closedDateExcel);
+						Cell cell = row.getCell(0);
+						Cell cell1 = row.getCell(1);
+						Cell cell2 = row.getCell(2);
+						Cell cell3 = row.getCell(3);
+						Cell cell4 = row.getCell(4);
+						Cell cell5 = row.getCell(5);
+						Cell cell6 = row.getCell(6);
+						Cell cell7 = row.getCell(7);
+						Cell cell8 = row.getCell(8);
+						cell.setCellStyle(style);
+						cell1.setCellStyle(style);
+						cell2.setCellStyle(style);
+						cell3.setCellStyle(style);
+						cell4.setCellStyle(style);
+						cell5.setCellStyle(style);
+						cell6.setCellStyle(style);
+						cell7.setCellStyle(style);
+						cell8.setCellStyle(style);
 					} else if (queryStatus == 3) {
 						Row row = sheet.createRow(rowNum++);
 						java.util.Date raisedDate = employee.getRaisedDate();
@@ -801,23 +695,1285 @@ public class JobQuery {
 			 * handle exception }
 			 */
 
+			// Write the workbook in file system
+
+			try {
+				FileOutputStream out = new FileOutputStream(new File("E:\\New folder\\queries.xlsx"));
+				workbook.write(out);
+				out.flush();
+				out.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			System.out.println("Done");
+			System.out.println("in out");
+
 		
-				// Write the workbook in file system
-				
-			 try {
-				 FileOutputStream out = new FileOutputStream(new File("E:\\New folder\\queries.xlsx"));
-				    workbook.write(out);
-				    out.flush();
-				    out.close();
-		        } catch (FileNotFoundException e) {
-		            e.printStackTrace();
-		        } catch (IOException e) {
-		            e.printStackTrace();
-		        }
-
-		        System.out.println("Done");
-
-	}
 	}
 
+	public void createExcelByClickTest() throws IOException {
+
+		int status = 0;
+		int queryStatus = 0;
+		String clientName="";
+		int clientId=0;
+		String[] columns = { "Client", "Raised On", "Queries/Enhancements", "Raised By", "Raised through",
+				"Attended By", "Comments", "Closed By", "Closed On" };
+		Workbook workbook = new XSSFWorkbook(); // new HSSFWorkbook() for generating `.xls` file
+		System.out.println("in create");
+
+		CreationHelper createHelper = workbook.getCreationHelper();
+
+		Sheet sheet = workbook.createSheet("HMS & DMS Queries");
+		Sheet sheet1 = workbook.createSheet("MAV");
+		Sheet sheet2 = workbook.createSheet("DMS");
+		Sheet sheet3 = workbook.createSheet("Shahid");
+		Header header = sheet.getHeader();
+		header.setCenter("HMS Support/Development Queries");
+		header.setLeft("Open - Yellow 	Closed - Green");
+
+		CellStyle style = workbook.createCellStyle();
+		style.setFillForegroundColor(IndexedColors.GREEN.getIndex());
+		style.setBorderBottom(style.BORDER_THIN);
+		style.setBorderRight(style.BORDER_THIN);
+		style.setBorderLeft(style.BORDER_THIN);
+		style.setBorderTop(style.BORDER_THIN);
+		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		Font font = workbook.createFont();
+		font.setColor(IndexedColors.BLACK.getIndex());
+		style.setFont(font);
+
+		CellStyle style1 = workbook.createCellStyle();
+		style1.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+		style1.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		style1.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+		style1.setBorderBottom(style.BORDER_THIN);
+		style1.setBorderRight(style.BORDER_THIN);
+		style1.setBorderLeft(style.BORDER_THIN);
+		style1.setBorderTop(style.BORDER_THIN);
+		Font font1 = workbook.createFont();
+		font1.setColor(IndexedColors.YELLOW.getIndex());
+		style1.setFont(font);
+
+		CellStyle style2 = workbook.createCellStyle();
+		style2.setFillForegroundColor(IndexedColors.SKY_BLUE.getIndex());
+		style2.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		style2.setFillForegroundColor(IndexedColors.SKY_BLUE.getIndex());
+		style2.setBorderBottom(style.BORDER_THIN);
+		style2.setBorderRight(style.BORDER_THIN);
+		style2.setBorderLeft(style.BORDER_THIN);
+		style2.setBorderTop(style.BORDER_THIN);
+		Font font2 = workbook.createFont();
+		font2.setColor(IndexedColors.BLACK.getIndex());
+		style2.setFont(font);
+
+		List<QueryModel> queryReportForExcelCondition = queryService.getQueryReportForExcel(0);
+		for (QueryModel queryModel : queryReportForExcelCondition) {
+			status = queryModel.getQueryStatus();
+
+			
+				Font headerFont = workbook.createFont();
+				headerFont.setBold(true);
+				headerFont.setFontHeightInPoints((short) 14);
+				headerFont.setColor(IndexedColors.BROWN.getIndex());
+				CellStyle headerCellStyle = workbook.createCellStyle();
+				headerCellStyle.setFont(headerFont);
+				Row headerRow = sheet.createRow(0);
+				for (int i = 0; i < columns.length; i++) {
+					Cell cell = headerRow.createCell(i);
+					cell.setCellValue(columns[i]);
+					cell.setCellStyle(headerCellStyle);
+				}
+				CellStyle dateCellStyle = workbook.createCellStyle();
+				dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+				int rowNum = 1;
+				 clientId=0;
+				List<QueryModel> queryReportForExcel = queryService.getQueryReportForExcel(clientId);
+				for (QueryModel employee : queryReportForExcel) {
+					queryStatus = employee.getQueryStatus();
+					if (queryStatus == 1) {
+						Row row = sheet.createRow(rowNum++);
+						row.createCell(0).setCellValue(employee.getClient());
+						java.util.Date raisedDate = employee.getRaisedDate();
+						java.util.Date closedDate = employee.getClosedDate();
+						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+						String raisedDateExcel = dateFormat.format(raisedDate);
+						String closedDateExcel = dateFormat.format(closedDate);
+						row.createCell(1).setCellValue(raisedDateExcel);
+						row.createCell(2).setCellValue(employee.getQuery());
+						row.createCell(3).setCellValue(employee.getRaisedBy());
+						row.createCell(4).setCellValue(employee.getRaisedThrough());
+						row.createCell(5).setCellValue(employee.getAttentedBy());
+						row.createCell(6).setCellValue(employee.getStatus());
+						row.createCell(7).setCellValue(employee.getClosedBy());
+						row.createCell(8).setCellValue(closedDateExcel);
+						Cell cell = row.getCell(0);
+						Cell cell1 = row.getCell(1);
+						Cell cell2 = row.getCell(2);
+						Cell cell3 = row.getCell(3);
+						Cell cell4 = row.getCell(4);
+						Cell cell5 = row.getCell(5);
+						Cell cell6 = row.getCell(6);
+						Cell cell7 = row.getCell(7);
+						Cell cell8 = row.getCell(8);
+						cell.setCellStyle(style);
+						cell1.setCellStyle(style);
+						cell2.setCellStyle(style);
+						cell3.setCellStyle(style);
+						cell4.setCellStyle(style);
+						cell5.setCellStyle(style);
+						cell6.setCellStyle(style);
+						cell7.setCellStyle(style);
+						cell8.setCellStyle(style);
+					} else if (queryStatus == 3) {
+						Row row = sheet.createRow(rowNum++);
+						java.util.Date raisedDate = employee.getRaisedDate();
+						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+						String raisedDateExcel = dateFormat.format(raisedDate);
+
+						row.createCell(0).setCellValue(employee.getClient());
+
+						Cell dateOfBirthCell = row.createCell(1);
+						dateOfBirthCell.setCellValue(raisedDateExcel);
+						dateOfBirthCell.setCellStyle(dateCellStyle);
+						row.createCell(2).setCellValue(employee.getQuery());
+						row.createCell(3).setCellValue(employee.getRaisedBy());
+						row.createCell(4).setCellValue(employee.getRaisedThrough());
+						row.createCell(5).setCellValue(employee.getAttentedBy());
+						row.createCell(6).setCellValue(employee.getStatus());
+						row.createCell(7).setCellValue(employee.getClosedBy());
+						row.createCell(8).setCellValue("");
+
+						/*
+						 * Cell dateOfBirthCell = row.createCell(2);
+						 * dateOfBirthCell.setCellValue(employee.getRaisedDate());
+						 * dateOfBirthCell.setCellStyle(dateCellStyle);
+						 * 
+						 * row.createCell(3).setCellValue(employee.getQuery()); row.setRowStyle(style);
+						 * Cell cell = row.getCell(0); Cell cell1 = row.getCell(1);
+						 * 
+						 * Cell cell2 = row.getCell(2); Cell cell3 = row.getCell(3);
+						 */
+						Cell cell = row.getCell(0);
+						Cell cell1 = row.getCell(1);
+
+						Cell cell2 = row.getCell(2);
+						Cell cell3 = row.getCell(3);
+						Cell cell4 = row.getCell(4);
+						Cell cell5 = row.getCell(5);
+						Cell cell6 = row.getCell(6);
+						Cell cell7 = row.getCell(7);
+						Cell cell8 = row.getCell(8);
+						cell.setCellStyle(style2);
+						cell1.setCellStyle(style2);
+						cell2.setCellStyle(style2);
+						cell3.setCellStyle(style2);
+						cell4.setCellStyle(style2);
+						cell5.setCellStyle(style2);
+						cell6.setCellStyle(style2);
+						cell7.setCellStyle(style2);
+
+						cell8.setCellStyle(style2);
+
+					}
+
+					else {
+						Row row = sheet.createRow(rowNum++);
+						java.util.Date raisedDate = employee.getRaisedDate();
+						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+						String raisedDateExcel = dateFormat.format(raisedDate);
+						row.createCell(0).setCellValue(employee.getClient());
+						Cell dateOfBirthCell = row.createCell(1);
+						dateOfBirthCell.setCellValue(raisedDateExcel);
+						dateOfBirthCell.setCellStyle(dateCellStyle);
+						row.createCell(2).setCellValue(employee.getQuery());
+						row.createCell(3).setCellValue(employee.getRaisedBy());
+						row.createCell(4).setCellValue(employee.getRaisedThrough());
+						row.createCell(5).setCellValue(employee.getAttentedBy());
+						row.createCell(6).setCellValue(employee.getStatus());
+						row.createCell(7).setCellValue(employee.getClosedBy());
+						row.createCell(8).setCellValue("");
+						Cell cell = row.getCell(0);
+						Cell cell1 = row.getCell(1);
+						Cell cell2 = row.getCell(2);
+						Cell cell3 = row.getCell(3);
+						Cell cell4 = row.getCell(4);
+						Cell cell5 = row.getCell(5);
+						Cell cell6 = row.getCell(6);
+						Cell cell7 = row.getCell(7);
+						Cell cell8 = row.getCell(8);
+						cell.setCellStyle(style1);
+						cell1.setCellStyle(style1);
+						cell2.setCellStyle(style1);
+						cell3.setCellStyle(style1);
+						cell4.setCellStyle(style1);
+						cell5.setCellStyle(style1);
+						cell6.setCellStyle(style1);
+						cell7.setCellStyle(style1);
+						cell8.setCellStyle(style1);
+					}
+				}
+		}
+					List<QueryModel> queryReportclient = queryService.getQueryReportForExcel(0);
+					for (QueryModel queryModel2 : queryReportclient) {
+						 clientName = queryModel2.getClient();
+						 clientId=queryModel2.getClientId();
+					}
+					if (clientId == 1) {
+						List<QueryModel> queryReportForExcelConditiontest = queryService.getQueryReportForExcel( 0);
+						for (QueryModel queryModel : queryReportForExcelConditiontest) {
+							status = queryModel.getQueryStatus();
+								Font headerFont = workbook.createFont();
+								headerFont.setBold(true);
+								headerFont.setFontHeightInPoints((short) 14);
+								headerFont.setColor(IndexedColors.BROWN.getIndex());
+								CellStyle headerCellStyle = workbook.createCellStyle();
+								headerCellStyle.setFont(headerFont);
+								Row headerRow = sheet1.createRow(0);
+								for (int i = 0; i < columns.length; i++) {
+									Cell cell = headerRow.createCell(i);
+									cell.setCellValue(columns[i]);
+									cell.setCellStyle(headerCellStyle);
+								}
+								CellStyle dateCellStyle = workbook.createCellStyle();
+								dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+								int rowNum = 1;
+								List<QueryModel> queryReportForExcel = queryService.getQueryReportForExcel(clientId);
+								for (QueryModel employee : queryReportForExcel) {
+									queryStatus = employee.getQueryStatus();
+									if (queryStatus == 1) {
+										Row row = sheet1.createRow(rowNum++);
+										row.createCell(0).setCellValue(employee.getClient());
+										java.util.Date raisedDate = employee.getRaisedDate();
+										java.util.Date closedDate = employee.getClosedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										String closedDateExcel = dateFormat.format(closedDate);
+										row.createCell(1).setCellValue(raisedDateExcel);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue(closedDateExcel);
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style);
+										cell1.setCellStyle(style);
+										cell2.setCellStyle(style);
+										cell3.setCellStyle(style);
+										cell4.setCellStyle(style);
+										cell5.setCellStyle(style);
+										cell6.setCellStyle(style);
+										cell7.setCellStyle(style);
+										cell8.setCellStyle(style);
+									} else if (queryStatus == 3) {
+										Row row = sheet1.createRow(rowNum++);
+										java.util.Date raisedDate = employee.getRaisedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										row.createCell(0).setCellValue(employee.getClient());
+										Cell dateOfBirthCell = row.createCell(1);
+										dateOfBirthCell.setCellValue(raisedDateExcel);
+										dateOfBirthCell.setCellStyle(dateCellStyle);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue("");
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style2);
+										cell1.setCellStyle(style2);
+										cell2.setCellStyle(style2);
+										cell3.setCellStyle(style2);
+										cell4.setCellStyle(style2);
+										cell5.setCellStyle(style2);
+										cell6.setCellStyle(style2);
+										cell7.setCellStyle(style2);
+										cell8.setCellStyle(style2);
+									}
+									else {
+										Row row = sheet1.createRow(rowNum++);
+										java.util.Date raisedDate = employee.getRaisedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										row.createCell(0).setCellValue(employee.getClient());
+										Cell dateOfBirthCell = row.createCell(1);
+										dateOfBirthCell.setCellValue(raisedDateExcel);
+										dateOfBirthCell.setCellStyle(dateCellStyle);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue("");
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style1);
+										cell1.setCellStyle(style1);
+										cell2.setCellStyle(style1);
+										cell3.setCellStyle(style1);
+										cell4.setCellStyle(style1);
+										cell5.setCellStyle(style1);
+										cell6.setCellStyle(style1);
+										cell7.setCellStyle(style1);
+										cell8.setCellStyle(style1);
+									}
+
+									for (int i = 0; i < columns.length; i++) {
+										sheet.autoSizeColumn(i);
+									}
+					}
+						}
+					}
+					if (clientId == 2) {
+						List<QueryModel> queryReportForExcelConditiontest = queryService.getQueryReportForExcel( 0);
+						for (QueryModel queryModel : queryReportForExcelConditiontest) {
+							status = queryModel.getQueryStatus();
+								Font headerFont = workbook.createFont();
+								headerFont.setBold(true);
+								headerFont.setFontHeightInPoints((short) 14);
+								headerFont.setColor(IndexedColors.BROWN.getIndex());
+								CellStyle headerCellStyle = workbook.createCellStyle();
+								headerCellStyle.setFont(headerFont);
+								Row headerRow = sheet2.createRow(0);
+								for (int i = 0; i < columns.length; i++) {
+									Cell cell = headerRow.createCell(i);
+									cell.setCellValue(columns[i]);
+									cell.setCellStyle(headerCellStyle);
+								}
+								CellStyle dateCellStyle = workbook.createCellStyle();
+								dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+								int rowNum = 1;
+								List<QueryModel> queryReportForExcel = queryService.getQueryReportForExcel(clientId);
+								for (QueryModel employee : queryReportForExcel) {
+									queryStatus = employee.getQueryStatus();
+									if (queryStatus == 1) {
+										Row row = sheet2.createRow(rowNum++);
+										row.createCell(0).setCellValue(employee.getClient());
+										java.util.Date raisedDate = employee.getRaisedDate();
+										java.util.Date closedDate = employee.getClosedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										String closedDateExcel = dateFormat.format(closedDate);
+										row.createCell(1).setCellValue(raisedDateExcel);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue(closedDateExcel);
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style);
+										cell1.setCellStyle(style);
+										cell2.setCellStyle(style);
+										cell3.setCellStyle(style);
+										cell4.setCellStyle(style);
+										cell5.setCellStyle(style);
+										cell6.setCellStyle(style);
+										cell7.setCellStyle(style);
+										cell8.setCellStyle(style);
+									} else if (queryStatus == 3) {
+										Row row = sheet2.createRow(rowNum++);
+										java.util.Date raisedDate = employee.getRaisedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										row.createCell(0).setCellValue(employee.getClient());
+										Cell dateOfBirthCell = row.createCell(1);
+										dateOfBirthCell.setCellValue(raisedDateExcel);
+										dateOfBirthCell.setCellStyle(dateCellStyle);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue("");
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style2);
+										cell1.setCellStyle(style2);
+										cell2.setCellStyle(style2);
+										cell3.setCellStyle(style2);
+										cell4.setCellStyle(style2);
+										cell5.setCellStyle(style2);
+										cell6.setCellStyle(style2);
+										cell7.setCellStyle(style2);
+										cell8.setCellStyle(style2);
+									}
+									else {
+										Row row = sheet2.createRow(rowNum++);
+										java.util.Date raisedDate = employee.getRaisedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										row.createCell(0).setCellValue(employee.getClient());
+										Cell dateOfBirthCell = row.createCell(1);
+										dateOfBirthCell.setCellValue(raisedDateExcel);
+										dateOfBirthCell.setCellStyle(dateCellStyle);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue("");
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style1);
+										cell1.setCellStyle(style1);
+										cell2.setCellStyle(style1);
+										cell3.setCellStyle(style1);
+										cell4.setCellStyle(style1);
+										cell5.setCellStyle(style1);
+										cell6.setCellStyle(style1);
+										cell7.setCellStyle(style1);
+										cell8.setCellStyle(style1);
+									}
+
+									for (int i = 0; i < columns.length; i++) {
+										sheet.autoSizeColumn(i);
+									}
+					}
+						}
+					}
+					
+					
+					
+					if (clientId == 3) {
+						List<QueryModel> queryReportForExcelConditiontest = queryService.getQueryReportForExcel( 0);
+						for (QueryModel queryModel : queryReportForExcelConditiontest) {
+							status = queryModel.getQueryStatus();
+								Font headerFont = workbook.createFont();
+								headerFont.setBold(true);
+								headerFont.setFontHeightInPoints((short) 14);
+								headerFont.setColor(IndexedColors.BROWN.getIndex());
+								CellStyle headerCellStyle = workbook.createCellStyle();
+								headerCellStyle.setFont(headerFont);
+								Row headerRow = sheet1.createRow(0);
+								for (int i = 0; i < columns.length; i++) {
+									Cell cell = headerRow.createCell(i);
+									cell.setCellValue(columns[i]);
+									cell.setCellStyle(headerCellStyle);
+								}
+								CellStyle dateCellStyle = workbook.createCellStyle();
+								dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+								int rowNum = 1;
+								List<QueryModel> queryReportForExcel = queryService.getQueryReportForExcel(clientId);
+								for (QueryModel employee : queryReportForExcel) {
+									queryStatus = employee.getQueryStatus();
+									if (queryStatus == 1) {
+										Row row = sheet1.createRow(rowNum++);
+										row.createCell(0).setCellValue(employee.getClient());
+										java.util.Date raisedDate = employee.getRaisedDate();
+										java.util.Date closedDate = employee.getClosedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										String closedDateExcel = dateFormat.format(closedDate);
+										row.createCell(1).setCellValue(raisedDateExcel);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue(closedDateExcel);
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style);
+										cell1.setCellStyle(style);
+										cell2.setCellStyle(style);
+										cell3.setCellStyle(style);
+										cell4.setCellStyle(style);
+										cell5.setCellStyle(style);
+										cell6.setCellStyle(style);
+										cell7.setCellStyle(style);
+										cell8.setCellStyle(style);
+									} else if (queryStatus == 3) {
+										Row row = sheet1.createRow(rowNum++);
+										java.util.Date raisedDate = employee.getRaisedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										row.createCell(0).setCellValue(employee.getClient());
+										Cell dateOfBirthCell = row.createCell(1);
+										dateOfBirthCell.setCellValue(raisedDateExcel);
+										dateOfBirthCell.setCellStyle(dateCellStyle);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue("");
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style2);
+										cell1.setCellStyle(style2);
+										cell2.setCellStyle(style2);
+										cell3.setCellStyle(style2);
+										cell4.setCellStyle(style2);
+										cell5.setCellStyle(style2);
+										cell6.setCellStyle(style2);
+										cell7.setCellStyle(style2);
+										cell8.setCellStyle(style2);
+									}
+									else {
+										Row row = sheet1.createRow(rowNum++);
+										java.util.Date raisedDate = employee.getRaisedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										row.createCell(0).setCellValue(employee.getClient());
+										Cell dateOfBirthCell = row.createCell(1);
+										dateOfBirthCell.setCellValue(raisedDateExcel);
+										dateOfBirthCell.setCellStyle(dateCellStyle);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue("");
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style1);
+										cell1.setCellStyle(style1);
+										cell2.setCellStyle(style1);
+										cell3.setCellStyle(style1);
+										cell4.setCellStyle(style1);
+										cell5.setCellStyle(style1);
+										cell6.setCellStyle(style1);
+										cell7.setCellStyle(style1);
+										cell8.setCellStyle(style1);
+									}
+
+									for (int i = 0; i < columns.length; i++) {
+										sheet.autoSizeColumn(i);
+									}
+					}
+						}
+					}
+					if (clientId == 5) {
+						List<QueryModel> queryReportForExcelConditiontest = queryService.getQueryReportForExcel( 0);
+						for (QueryModel queryModel : queryReportForExcelConditiontest) {
+							status = queryModel.getQueryStatus();
+								Font headerFont = workbook.createFont();
+								headerFont.setBold(true);
+								headerFont.setFontHeightInPoints((short) 14);
+								headerFont.setColor(IndexedColors.BROWN.getIndex());
+								CellStyle headerCellStyle = workbook.createCellStyle();
+								headerCellStyle.setFont(headerFont);
+								Row headerRow = sheet1.createRow(0);
+								for (int i = 0; i < columns.length; i++) {
+									Cell cell = headerRow.createCell(i);
+									cell.setCellValue(columns[i]);
+									cell.setCellStyle(headerCellStyle);
+								}
+								CellStyle dateCellStyle = workbook.createCellStyle();
+								dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+								int rowNum = 1;
+								List<QueryModel> queryReportForExcel = queryService.getQueryReportForExcel(clientId);
+								for (QueryModel employee : queryReportForExcel) {
+									queryStatus = employee.getQueryStatus();
+									if (queryStatus == 1) {
+										Row row = sheet1.createRow(rowNum++);
+										row.createCell(0).setCellValue(employee.getClient());
+										java.util.Date raisedDate = employee.getRaisedDate();
+										java.util.Date closedDate = employee.getClosedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										String closedDateExcel = dateFormat.format(closedDate);
+										row.createCell(1).setCellValue(raisedDateExcel);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue(closedDateExcel);
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style);
+										cell1.setCellStyle(style);
+										cell2.setCellStyle(style);
+										cell3.setCellStyle(style);
+										cell4.setCellStyle(style);
+										cell5.setCellStyle(style);
+										cell6.setCellStyle(style);
+										cell7.setCellStyle(style);
+										cell8.setCellStyle(style);
+									} else if (queryStatus == 3) {
+										Row row = sheet1.createRow(rowNum++);
+										java.util.Date raisedDate = employee.getRaisedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										row.createCell(0).setCellValue(employee.getClient());
+										Cell dateOfBirthCell = row.createCell(1);
+										dateOfBirthCell.setCellValue(raisedDateExcel);
+										dateOfBirthCell.setCellStyle(dateCellStyle);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue("");
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style2);
+										cell1.setCellStyle(style2);
+										cell2.setCellStyle(style2);
+										cell3.setCellStyle(style2);
+										cell4.setCellStyle(style2);
+										cell5.setCellStyle(style2);
+										cell6.setCellStyle(style2);
+										cell7.setCellStyle(style2);
+										cell8.setCellStyle(style2);
+									}
+									else {
+										Row row = sheet1.createRow(rowNum++);
+										java.util.Date raisedDate = employee.getRaisedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										row.createCell(0).setCellValue(employee.getClient());
+										Cell dateOfBirthCell = row.createCell(1);
+										dateOfBirthCell.setCellValue(raisedDateExcel);
+										dateOfBirthCell.setCellStyle(dateCellStyle);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue("");
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style1);
+										cell1.setCellStyle(style1);
+										cell2.setCellStyle(style1);
+										cell3.setCellStyle(style1);
+										cell4.setCellStyle(style1);
+										cell5.setCellStyle(style1);
+										cell6.setCellStyle(style1);
+										cell7.setCellStyle(style1);
+										cell8.setCellStyle(style1);
+									}
+
+									for (int i = 0; i < columns.length; i++) {
+										sheet.autoSizeColumn(i);
+									}
+					}
+						}
+					}
+					if (clientId == 6) {
+						List<QueryModel> queryReportForExcelConditiontest = queryService.getQueryReportForExcel( 0);
+						for (QueryModel queryModel : queryReportForExcelConditiontest) {
+							status = queryModel.getQueryStatus();
+								Font headerFont = workbook.createFont();
+								headerFont.setBold(true);
+								headerFont.setFontHeightInPoints((short) 14);
+								headerFont.setColor(IndexedColors.BROWN.getIndex());
+								CellStyle headerCellStyle = workbook.createCellStyle();
+								headerCellStyle.setFont(headerFont);
+								Row headerRow = sheet1.createRow(0);
+								for (int i = 0; i < columns.length; i++) {
+									Cell cell = headerRow.createCell(i);
+									cell.setCellValue(columns[i]);
+									cell.setCellStyle(headerCellStyle);
+								}
+								CellStyle dateCellStyle = workbook.createCellStyle();
+								dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+								int rowNum = 1;
+								List<QueryModel> queryReportForExcel = queryService.getQueryReportForExcel(clientId);
+								for (QueryModel employee : queryReportForExcel) {
+									queryStatus = employee.getQueryStatus();
+									if (queryStatus == 1) {
+										Row row = sheet1.createRow(rowNum++);
+										row.createCell(0).setCellValue(employee.getClient());
+										java.util.Date raisedDate = employee.getRaisedDate();
+										java.util.Date closedDate = employee.getClosedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										String closedDateExcel = dateFormat.format(closedDate);
+										row.createCell(1).setCellValue(raisedDateExcel);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue(closedDateExcel);
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style);
+										cell1.setCellStyle(style);
+										cell2.setCellStyle(style);
+										cell3.setCellStyle(style);
+										cell4.setCellStyle(style);
+										cell5.setCellStyle(style);
+										cell6.setCellStyle(style);
+										cell7.setCellStyle(style);
+										cell8.setCellStyle(style);
+									} else if (queryStatus == 3) {
+										Row row = sheet1.createRow(rowNum++);
+										java.util.Date raisedDate = employee.getRaisedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										row.createCell(0).setCellValue(employee.getClient());
+										Cell dateOfBirthCell = row.createCell(1);
+										dateOfBirthCell.setCellValue(raisedDateExcel);
+										dateOfBirthCell.setCellStyle(dateCellStyle);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue("");
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style2);
+										cell1.setCellStyle(style2);
+										cell2.setCellStyle(style2);
+										cell3.setCellStyle(style2);
+										cell4.setCellStyle(style2);
+										cell5.setCellStyle(style2);
+										cell6.setCellStyle(style2);
+										cell7.setCellStyle(style2);
+										cell8.setCellStyle(style2);
+									}
+									else {
+										Row row = sheet1.createRow(rowNum++);
+										java.util.Date raisedDate = employee.getRaisedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										row.createCell(0).setCellValue(employee.getClient());
+										Cell dateOfBirthCell = row.createCell(1);
+										dateOfBirthCell.setCellValue(raisedDateExcel);
+										dateOfBirthCell.setCellStyle(dateCellStyle);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue("");
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style1);
+										cell1.setCellStyle(style1);
+										cell2.setCellStyle(style1);
+										cell3.setCellStyle(style1);
+										cell4.setCellStyle(style1);
+										cell5.setCellStyle(style1);
+										cell6.setCellStyle(style1);
+										cell7.setCellStyle(style1);
+										cell8.setCellStyle(style1);
+									}
+
+									for (int i = 0; i < columns.length; i++) {
+										sheet.autoSizeColumn(i);
+									}
+					}
+						}
+					}
+					if (clientId == 7) {
+						List<QueryModel> queryReportForExcelConditiontest = queryService.getQueryReportForExcel( 0);
+						for (QueryModel queryModel : queryReportForExcelConditiontest) {
+							status = queryModel.getQueryStatus();
+								Font headerFont = workbook.createFont();
+								headerFont.setBold(true);
+								headerFont.setFontHeightInPoints((short) 14);
+								headerFont.setColor(IndexedColors.BROWN.getIndex());
+								CellStyle headerCellStyle = workbook.createCellStyle();
+								headerCellStyle.setFont(headerFont);
+								Row headerRow = sheet1.createRow(0);
+								for (int i = 0; i < columns.length; i++) {
+									Cell cell = headerRow.createCell(i);
+									cell.setCellValue(columns[i]);
+									cell.setCellStyle(headerCellStyle);
+								}
+								CellStyle dateCellStyle = workbook.createCellStyle();
+								dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+								int rowNum = 1;
+								List<QueryModel> queryReportForExcel = queryService.getQueryReportForExcel(clientId);
+								for (QueryModel employee : queryReportForExcel) {
+									queryStatus = employee.getQueryStatus();
+									if (queryStatus == 1) {
+										Row row = sheet1.createRow(rowNum++);
+										row.createCell(0).setCellValue(employee.getClient());
+										java.util.Date raisedDate = employee.getRaisedDate();
+										java.util.Date closedDate = employee.getClosedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										String closedDateExcel = dateFormat.format(closedDate);
+										row.createCell(1).setCellValue(raisedDateExcel);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue(closedDateExcel);
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style);
+										cell1.setCellStyle(style);
+										cell2.setCellStyle(style);
+										cell3.setCellStyle(style);
+										cell4.setCellStyle(style);
+										cell5.setCellStyle(style);
+										cell6.setCellStyle(style);
+										cell7.setCellStyle(style);
+										cell8.setCellStyle(style);
+									} else if (queryStatus == 3) {
+										Row row = sheet1.createRow(rowNum++);
+										java.util.Date raisedDate = employee.getRaisedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										row.createCell(0).setCellValue(employee.getClient());
+										Cell dateOfBirthCell = row.createCell(1);
+										dateOfBirthCell.setCellValue(raisedDateExcel);
+										dateOfBirthCell.setCellStyle(dateCellStyle);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue("");
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style2);
+										cell1.setCellStyle(style2);
+										cell2.setCellStyle(style2);
+										cell3.setCellStyle(style2);
+										cell4.setCellStyle(style2);
+										cell5.setCellStyle(style2);
+										cell6.setCellStyle(style2);
+										cell7.setCellStyle(style2);
+										cell8.setCellStyle(style2);
+									}
+									else {
+										Row row = sheet1.createRow(rowNum++);
+										java.util.Date raisedDate = employee.getRaisedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										row.createCell(0).setCellValue(employee.getClient());
+										Cell dateOfBirthCell = row.createCell(1);
+										dateOfBirthCell.setCellValue(raisedDateExcel);
+										dateOfBirthCell.setCellStyle(dateCellStyle);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue("");
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style1);
+										cell1.setCellStyle(style1);
+										cell2.setCellStyle(style1);
+										cell3.setCellStyle(style1);
+										cell4.setCellStyle(style1);
+										cell5.setCellStyle(style1);
+										cell6.setCellStyle(style1);
+										cell7.setCellStyle(style1);
+										cell8.setCellStyle(style1);
+									}
+									for (int i = 0; i < columns.length; i++) {
+										sheet.autoSizeColumn(i);
+									}
+					}
+						}
+					}
+					
+			try {
+				FileOutputStream out = new FileOutputStream(new File("E:\\New folder\\queries.xlsx"));
+				workbook.write(out);
+				out.flush();
+				out.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	
+}
+
+
+
+
+
+	
+	
+	
+	
+	/*public void createExcelByClickTest1() throws IOException {
+
+		int status = 0;
+		int queryStatus = 0;
+		String clientName="";
+		int clientId=0;
+		String[] columns = { "Client", "Raised On", "Queries/Enhancements", "Raised By", "Raised through",
+				"Attended By", "Comments", "Closed By", "Closed On" };
+		Workbook workbook = new XSSFWorkbook(); // new HSSFWorkbook() for generating `.xls` file
+		System.out.println("in create");
+
+		CreationHelper createHelper = workbook.getCreationHelper();
+
+		Sheet sheet = workbook.createSheet("HMS & DMS Queries");
+		Sheet sheet1 = workbook.createSheet("MAV");
+		Sheet sheet2 = workbook.createSheet("DMS");
+		Sheet sheet3 = workbook.createSheet("Shahid");
+		Header header = sheet.getHeader();
+		header.setCenter("HMS Support/Development Queries");
+		header.setLeft("Open - Yellow 	Closed - Green");
+
+		CellStyle style = workbook.createCellStyle();
+		style.setFillForegroundColor(IndexedColors.GREEN.getIndex());
+		style.setBorderBottom(style.BORDER_THIN);
+		style.setBorderRight(style.BORDER_THIN);
+		style.setBorderLeft(style.BORDER_THIN);
+		style.setBorderTop(style.BORDER_THIN);
+		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		Font font = workbook.createFont();
+		font.setColor(IndexedColors.BLACK.getIndex());
+		style.setFont(font);
+
+		CellStyle style1 = workbook.createCellStyle();
+		style1.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+		style1.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		style1.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+		style1.setBorderBottom(style.BORDER_THIN);
+		style1.setBorderRight(style.BORDER_THIN);
+		style1.setBorderLeft(style.BORDER_THIN);
+		style1.setBorderTop(style.BORDER_THIN);
+		Font font1 = workbook.createFont();
+		font1.setColor(IndexedColors.YELLOW.getIndex());
+		style1.setFont(font);
+
+		CellStyle style2 = workbook.createCellStyle();
+		style2.setFillForegroundColor(IndexedColors.SKY_BLUE.getIndex());
+		style2.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		style2.setFillForegroundColor(IndexedColors.SKY_BLUE.getIndex());
+		style2.setBorderBottom(style.BORDER_THIN);
+		style2.setBorderRight(style.BORDER_THIN);
+		style2.setBorderLeft(style.BORDER_THIN);
+		style2.setBorderTop(style.BORDER_THIN);
+		Font font2 = workbook.createFont();
+		font2.setColor(IndexedColors.BLACK.getIndex());
+		style2.setFont(font);
+
+		List<QueryModel> queryReportForExcelCondition = queryService.getQueryReportForExcel(0);
+		for (QueryModel queryModel : queryReportForExcelCondition) {
+			status = queryModel.getQueryStatus();
+
+			
+				Font headerFont = workbook.createFont();
+				headerFont.setBold(true);
+				headerFont.setFontHeightInPoints((short) 14);
+				headerFont.setColor(IndexedColors.BROWN.getIndex());
+				CellStyle headerCellStyle = workbook.createCellStyle();
+				headerCellStyle.setFont(headerFont);
+				Row headerRow = sheet.createRow(0);
+				for (int i = 0; i < columns.length; i++) {
+					Cell cell = headerRow.createCell(i);
+					cell.setCellValue(columns[i]);
+					cell.setCellStyle(headerCellStyle);
+				}
+				CellStyle dateCellStyle = workbook.createCellStyle();
+				dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+				int rowNum = 1;
+				 clientId=0;
+				List<QueryModel> queryReportForExcel = queryService.getQueryReportForExcel(clientId);
+				for (QueryModel employee : queryReportForExcel) {
+					queryStatus = employee.getQueryStatus();
+					clientId=	employee.getClientId();
+		List<QueryModel> queryReportForExcelConditiontest = queryService.getQueryReportForExcel( 0);
+						for (QueryModel queryModel1 : queryReportForExcelConditiontest) {
+							status = queryModel1.getQueryStatus();
+							//	Font headerFont = workbook.createFont();
+								headerFont.setBold(true);
+								headerFont.setFontHeightInPoints((short) 14);
+								headerFont.setColor(IndexedColors.BROWN.getIndex());
+							//	CellStyle headerCellStyle = workbook.createCellStyle();
+								headerCellStyle.setFont(headerFont);
+								Row headerRow = sheet2.createRow(0);
+								for (int i = 0; i < columns.length; i++) {
+									Cell cell = headerRow.createCell(i);
+									cell.setCellValue(columns[i]);
+									cell.setCellStyle(headerCellStyle);
+								}
+								CellStyle dateCellStyle = workbook.createCellStyle();
+								dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+								int rowNum = 1;
+								List<QueryModel> queryReportForExcel = queryService.getQueryReportForExcel(clientId);
+								for (QueryModel employee : queryReportForExcel) {
+									queryStatus = employee.getQueryStatus();
+									if (queryStatus == 1) {
+										Row row = sheet2.createRow(rowNum++);
+										row.createCell(0).setCellValue(employee.getClient());
+										java.util.Date raisedDate = employee.getRaisedDate();
+										java.util.Date closedDate = employee.getClosedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										String closedDateExcel = dateFormat.format(closedDate);
+										row.createCell(1).setCellValue(raisedDateExcel);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue(closedDateExcel);
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style);
+										cell1.setCellStyle(style);
+										cell2.setCellStyle(style);
+										cell3.setCellStyle(style);
+										cell4.setCellStyle(style);
+										cell5.setCellStyle(style);
+										cell6.setCellStyle(style);
+										cell7.setCellStyle(style);
+										cell8.setCellStyle(style);
+									} else if (queryStatus == 3) {
+										Row row = sheet2.createRow(rowNum++);
+										java.util.Date raisedDate = employee.getRaisedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										row.createCell(0).setCellValue(employee.getClient());
+										Cell dateOfBirthCell = row.createCell(1);
+										dateOfBirthCell.setCellValue(raisedDateExcel);
+										dateOfBirthCell.setCellStyle(dateCellStyle);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue("");
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style2);
+										cell1.setCellStyle(style2);
+										cell2.setCellStyle(style2);
+										cell3.setCellStyle(style2);
+										cell4.setCellStyle(style2);
+										cell5.setCellStyle(style2);
+										cell6.setCellStyle(style2);
+										cell7.setCellStyle(style2);
+										cell8.setCellStyle(style2);
+									}
+									else {
+										Row row = sheet2.createRow(rowNum++);
+										java.util.Date raisedDate = employee.getRaisedDate();
+										DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
+										String raisedDateExcel = dateFormat.format(raisedDate);
+										row.createCell(0).setCellValue(employee.getClient());
+										Cell dateOfBirthCell = row.createCell(1);
+										dateOfBirthCell.setCellValue(raisedDateExcel);
+										dateOfBirthCell.setCellStyle(dateCellStyle);
+										row.createCell(2).setCellValue(employee.getQuery());
+										row.createCell(3).setCellValue(employee.getRaisedBy());
+										row.createCell(4).setCellValue(employee.getRaisedThrough());
+										row.createCell(5).setCellValue(employee.getAttentedBy());
+										row.createCell(6).setCellValue(employee.getStatus());
+										row.createCell(7).setCellValue(employee.getClosedBy());
+										row.createCell(8).setCellValue("");
+										Cell cell = row.getCell(0);
+										Cell cell1 = row.getCell(1);
+										Cell cell2 = row.getCell(2);
+										Cell cell3 = row.getCell(3);
+										Cell cell4 = row.getCell(4);
+										Cell cell5 = row.getCell(5);
+										Cell cell6 = row.getCell(6);
+										Cell cell7 = row.getCell(7);
+										Cell cell8 = row.getCell(8);
+										cell.setCellStyle(style1);
+										cell1.setCellStyle(style1);
+										cell2.setCellStyle(style1);
+										cell3.setCellStyle(style1);
+										cell4.setCellStyle(style1);
+										cell5.setCellStyle(style1);
+										cell6.setCellStyle(style1);
+										cell7.setCellStyle(style1);
+										cell8.setCellStyle(style1);
+									}
+
+									for (int i = 0; i < columns.length; i++) {
+										sheet.autoSizeColumn(i);
+									}
+					}
+						}
+
+			try {
+				FileOutputStream out = new FileOutputStream(new File("E:\\New folder\\queries.xlsx"));
+				workbook.write(out);
+				out.flush();
+				out.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			System.out.println("Done");
+			System.out.println("in out");
+
+		
+	}
+
+}
+	}*/
 }

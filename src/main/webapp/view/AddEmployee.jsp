@@ -34,6 +34,40 @@ th {
 </style>
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
+
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+function validateEmployee(){
+	 var employeeEmail =  $('#employeeEmail').val();
+	 var employeeName =  $('#employeeName').val();
+	
+	 
+	 
+	 
+	 
+	 
+	 if(employeeEmail=='' ){
+		 alert("Please enter EmployeeEmail")
+		 return false;
+		 
+		 
+	 }
+	 
+	 if(employeeName=='' ){
+		 alert("Please enter EmployeeName");
+		 return false;
+		 
+		 
+	 }
+	
+	 else{
+		 true;
+	 }
+	
+	
+	
+}
+</script>
 </head>
 <body>
 
@@ -41,9 +75,9 @@ th {
 
 		<table>
 			<tr>
-				<td>Employee Name:<input type="text" name="employeeName">
+				<td>Employee Name:<input type="text" name="employeeName" id="employeeName">
 				</td>
-				<td>Employee Email:<input type="text" name="employeeEmail">
+				<td>Employee Email:<input type="text" name="employeeEmail" id="employeeEmail">
 				</td>
 				<td>MAILTYPE:<select name="mailType">
 
@@ -51,7 +85,7 @@ th {
 						<option value="CC">CC</option>
 				</select>
 				</td>
-				<td><input type="submit" value="submit"></td>
+				<td><input type="submit" value="submit" onclick="return validateEmployee()"></td>
 			</tr>
 		</table>
 		<div>
@@ -99,12 +133,12 @@ th {
 
 				
 				</tr>
-					<tr>
+				<!-- 	<tr>
 		<td ><a
 								href="homeMenu">Back</a></td>
 
 				
-				</tr>					
+				</tr>	 -->				
 		</table>
 		</div>
 

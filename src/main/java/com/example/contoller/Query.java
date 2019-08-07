@@ -3,7 +3,9 @@ package com.example.contoller;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +37,15 @@ public class Query {
 	
 	@Autowired
 	private JobQuery jobQuery;
+
+	
+	public static String getDatelog() {
+		String dat = "";
+		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+		Date date = new Date();
+		dat = dateFormat.format(date);
+		return dat;
+	}
 	
 
 	@RequestMapping(value = "menu")
@@ -73,8 +84,17 @@ public class Query {
 
 	@RequestMapping(value = "gotoQueryReport")
 
-	public String gotoQueryReport() {
-		return "QueryReport";
+	public ModelAndView gotoQueryReport() throws ParseException {
+		ModelAndView view = new ModelAndView();
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		 Date date = new Date();
+	        System.out.println(sdf.format(date));
+	        String fromDate = sdf.format(date);
+	        String toDate = sdf.format(date);
+		List<QueryModel> queryReport = queryService.getQueryReport(fromDate, toDate);
+		view.addObject("queryReport", queryReport);
+		view.setViewName("QueryReport");
+		return view;
 
 	}
 
@@ -184,7 +204,7 @@ public class Query {
 	
 	@RequestMapping(value="updateExcel")
 	public String updateExcel() throws IOException {
-		jobQuery.createExcelByClick();
+		jobQuery.createExcelByClickTest();
 		return "menu";
 	}
 

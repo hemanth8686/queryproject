@@ -37,7 +37,7 @@ body {
 					<tr class="tabcontent">
 						<td></td>
 					<tr>
-					<td><input type="text" style="border:none"  name="Id" value="<c:out value="${dlist.queryId}" />"></td>
+					<td><input type="text" style="border:none"   name="Id" readonly="readonly" value="<c:out value="${dlist.queryId}" />"></td>
 
 
 						<td nowrap="nowrap"><fmt:formatDate pattern="dd-MM-yyyy"
@@ -55,13 +55,15 @@ body {
 					</td>
 						<td nowrap="nowrap"><select name='completedBy'>
     <c:forEach items="${employeeList}" var="dlist">
+       
             <option value="${dlist.employeeName}">${dlist.employeeName}</option>
     </c:forEach>
 </select></td>
 						<td nowrap="nowrap"><select name="status"> 
             <option ><c:out value="${dlist.status}" /></option>
+             <option  value="select">select</option>
            <option value="pending">Pending</option>
-<option value="completed">COMPLETED</option>
+<option value="completed">Completed</option>
 </select></td>
 
 

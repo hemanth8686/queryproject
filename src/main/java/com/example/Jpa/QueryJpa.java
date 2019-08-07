@@ -41,7 +41,12 @@ public interface QueryJpa extends CrudRepository<QueryModel, Integer> {
 	
 	@Query("from QueryModel where  queryStatus!=0  ")
 
-	public List<QueryModel> getQueryReportForExcel();
+	public List<QueryModel> getQueryReportForExcelCommon();
+	
+	@Query("from QueryModel where  queryStatus!=0 and clientId= :Id ")
+
+	public List<QueryModel> getQueryReportForExcel(@Param("Id") int Id);
+	
 	
 	
 

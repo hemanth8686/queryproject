@@ -5,6 +5,59 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+function validateForm(){
+	 var raisedDate =  $('#raisedDate').val();
+	 var raisedBy =  $('#raisedBy').val();
+	 var raisedThrough =  $('#raisedThrough').val();
+	 var status =  $('#status').val();
+	 var attentedBy =  $('#attentedBy').val();
+	 
+	 
+	 
+	 
+	 
+	 if(raisedDate=='' ){
+		 alert("Please enter RaisedDate")
+		 return false;
+		 
+		 
+	 }
+	 
+	 if(raisedBy=='' ){
+		 alert("Please enter RaisedBy");
+		 return false;
+		 
+		 
+	 }
+	 if(raisedThrough=='' ){
+		 alert("Please enter RaisedThrough");
+		 return false;
+		 
+		 
+	 }
+	 if(status=='' ){
+		 alert("Please enter Status");
+		 return false;
+		 
+		 
+	 }
+	 if(attentedBy=='' ){
+		 alert("Please enter AttentedBy")
+		 return false;
+		 
+		 
+	 }
+	 else{
+		 true;
+	 }
+	
+	
+	
+}
+</script>
+
 <style type="text/css">
 body {
   background-color: gray;
@@ -26,6 +79,7 @@ body {
   cursor: pointer;
 }
 </style>
+
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
 </head>
@@ -41,17 +95,17 @@ body {
 <!-- <td>Client:<input type="text" name="client"></td> -->
 
 
-<td>RAISEDDATE:<input type="date" name="raisedDate">
-<td>	Client:	<select name='client'>
+<td>RAISEDDATE:<input type="date" id="raisedDate" name="raisedDate">
+<td>	Client:	<select name='client' id="client">
     <c:forEach items="${clientList}" var="dlist">
             <option value="${dlist.clientName}">${dlist.clientName}</option>
     </c:forEach>
 </select></td>
-<td>RAISEDBY:<input type="text" name="raisedBy">
+<td>RAISEDBY:<input type="text" id="raisedBy" name="raisedBy">
 <td>RaisedThrough:
 
 
-<select name="raisedThrough">
+<select name="raisedThrough" id="raisedThrough">
 <option value="mail">Mail</option>
 <option value="call">call</option>
 </select>
@@ -61,28 +115,28 @@ body {
 <!-- <td>Query/Enhanchement:
  <textarea rows="4" cols="50" name="query">
 </textarea>  -->
-<td>	ATTENTEDBY:	<select name='attentedBy'>
+<td>	ATTENTEDBY:	<select name='attentedBy' id="attentedBy">
     <c:forEach items="${employeeList}" var="dlist">
             <option value="${dlist.employeeName}">${dlist.employeeName}</option>
     </c:forEach>
 </select></td>
-<td>	COMPLETEDBY:	<select name='completedBy'>
+<td>	COMPLETEDBY:	<select name='completedBy' id="completedBy">
 <option value="">Select</option>
     <c:forEach items="${employeeList}" var="dlist">
             <option value="${dlist.employeeName}">${dlist.employeeName}</option>
     </c:forEach>
 </select></td>
-<td>COMPLETEDDATE:<input type="date" name="completedDate">
+<td>COMPLETEDDATE:<input type="date" name="completedDate" id="completedDate">
 <td>Status:
 
-<select name="status">
+<select name="status" id="status">
 <option value="pending">Pending</option>
 <option value="completed">Completed</option>
 </select>
 </td>
 <td>Priority:
 
-<select name="Priority">
+<select name="Priority" >
 <option value="high">High</option>
 <option value="medium">medium</option>
 <option value="low">low</option>
@@ -105,7 +159,7 @@ body {
 </table>
 <table>
 
-<tr  ><td colspan="10" rowspan="5" align="center"><input type="submit" value="sumit"></td></tr>
+<tr  ><td colspan="10" rowspan="5" align="center"><input type="submit" value="submit" onclick="return validateForm()"></td></tr>
 
 </table>
 

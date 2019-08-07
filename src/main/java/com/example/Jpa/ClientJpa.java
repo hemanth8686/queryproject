@@ -16,5 +16,10 @@ public interface ClientJpa extends CrudRepository<ClientModel, Integer> {
 	@Query("from ClientModel where  status=1  ")
 
 	public List<ClientModel> getClientList();
+	
+	
+	@Query("select Id from  ClientModel where  clientName=:name  ")
+
+	public int getClientNameById(@Param("name") String name);
 
 }

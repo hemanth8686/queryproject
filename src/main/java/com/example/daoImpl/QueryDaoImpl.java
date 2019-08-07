@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -58,7 +59,9 @@ public class QueryDaoImpl implements QueryDao {
 
 		return dat;
 	}
-	
+	public int getClientIdByName(String name) {
+		return clientJpa.getClientNameById(name);
+	}
 	
 	public void saveQuery(QueryBean queryBean) throws ParseException {
 		QueryModel model=new QueryModel();
@@ -70,6 +73,8 @@ public class QueryDaoImpl implements QueryDao {
 		 
 		  
 		model.setClient(queryBean.getClient());
+		System.out.println(getClientIdByName(queryBean.getClient()));
+		model.setClientId(getClientIdByName(queryBean.getClient()));
 		model.setRaisedDate(raisedDateForModel);
 		model.setQuery(queryBean.getQuery());
 		model.setRaisedBy(queryBean.getRaisedBy());
@@ -152,8 +157,24 @@ public class QueryDaoImpl implements QueryDao {
 	}
 
 	@Override
-	public List<QueryModel> getQueryReportForExcel() {
-		return queryJpa.getQueryReportForExcel();
+	public List<QueryModel> getQueryReportForExcel(int clientId) {
+				List<QueryModel> queryReportForExcel = new ArrayList<QueryModel>();
+System.out.println(clientId+"clientIdclientId");
+				if (clientId==0) {
+		queryReportForExcel= queryJpa.getQueryReportForExcelCommon();
+		
+	}
+	else {
+		queryReportForExcel = queryJpa.getQueryReportForExcel(clientId);
+		
+	}
+	return queryReportForExcel;
+		
+		
+			
+	
+		
+		
 	}
 
 	@Override

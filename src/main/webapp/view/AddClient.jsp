@@ -7,14 +7,14 @@
 <head>
 <style type="text/css">
 div {
-  width: 800px;
+  width: 400px;
   border: 3px solid green;
   padding: 50px;
   margin: 20px;
 }
 table {
   border-collapse: collapse;
-  width: 100%;
+  width: 60%;
 }
 
 th, td {

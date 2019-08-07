@@ -72,7 +72,7 @@ public class MailGenerator {
 
 		
 	}*/
-	@Scheduled(cron = "0 43 2	*  * * * ", zone = "Indian/Maldives")
+	@Scheduled(cron = "15 25 21 * * *",zone="Asia/Colombo")
 	public void scheduleMailGeneratortest() throws MessagingException {
 		StringBuilder builderTo=new StringBuilder();
 		StringBuilder builderCc=new StringBuilder();
@@ -115,8 +115,10 @@ public class MailGenerator {
 			       
 		        msg.setRecipients(Message.RecipientType.TO, stringTestTo);
 		        msg.setRecipients(Message.RecipientType.CC, stringTestCc);
-		        msg.setSubject("Text Mail with Attachment.");
+		        msg.setSubject("HMS&DMS Support Queries "+new Date());
 		        msg.setSentDate(new Date());
+		        
+		        StringBuilder stringBuilderForText=new StringBuilder();
 		        
 		        Multipart multipart = new MimeMultipart();
 		        

@@ -29,6 +29,7 @@ public class QueryModel {
 	private int queryId;
 	private int queryStatus;
 	
+	private int clientId;
 	
 	
 	
@@ -36,6 +37,14 @@ public class QueryModel {
 	
 	
 	
+	
+	
+	public int getClientId() {
+		return clientId;
+	}
+	public void setClientId(int clientId) {
+		this.clientId = clientId;
+	}
 	public int getQueryStatus() {
 		return queryStatus;
 	}

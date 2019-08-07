@@ -25,7 +25,7 @@ public interface QueryService {
 	 
 	public List<EmployeeModel>getEmployeeList();
 	public void addEmployee(String employeeName,String employeeMail,String mailType);
-	public List<QueryModel> getQueryReportForExcel();
+	public List<QueryModel> getQueryReportForExcel(int clientid);
 	
 	public String updateQuery(int  Id,String completedBy,String closedDate,String status);
 	

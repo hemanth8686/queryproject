@@ -55,9 +55,9 @@ public class QueryServiceImpl implements QueryService {
 	}
 
 	@Override
-	public List<QueryModel> getQueryReportForExcel() {
+	public List<QueryModel> getQueryReportForExcel(int clientId) {
 		// TODO Auto-generated method stub
-		return queryDao.getQueryReportForExcel();
+		return queryDao.getQueryReportForExcel(clientId);
 	}
 
 	@Override

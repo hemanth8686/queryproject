@@ -17,7 +17,7 @@ public interface QueryDao  {
 	public void addClient(String clientName);
 	public List<EmployeeModel>getEmployeeList();
 	public void addEmployee(String employeeName,String employeeMail,String mailType);
-	public List<QueryModel> getQueryReportForExcel();
+	public List<QueryModel> getQueryReportForExcel(int clientId);
 	public String updateQuery(int  Id,String completedBy,String closedDate,String status);
 	public List<QueryModel> getQueryById(int Id);
 	

@@ -97,17 +97,51 @@ TD {
 </style>
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+function validateDate(){
+	 var FromDate =  $('#fromDate').val();
+	 var ToDate =  $('#toDate').val();
+	
+	 
+	 
+	 
+	 
+	 
+	 if(FromDate=='' ){
+		 alert("Please enter FromDate")
+		 return false;
+		 
+		 
+	 }
+	 
+	 if(ToDate=='' ){
+		 alert("Please enter ToDate");
+		 return false;
+		 
+		 
+	 }
+	
+	 else{
+		 true;
+	 }
+	
+	
+	
+}
+</script>
+
 </head>
 <body>
 	<form action="queryReport" method="post">
 		<table>
 			<table width="60%">
 				<tr>
-					<td>FromDate:<input type="date" name="fromDate">
+					<td>FromDate:<input type="date" name="fromDate" id="fromDate">
 					</td>
-					<td>ToDate:<input type="date" name="toDate">
+					<td>ToDate:<input type="date" name="toDate" id="toDate">
 					</td>
-					<td><input type="submit" value="submit"></td>
+					<td><input type="submit" value="submit" onclick="return validateDate()"></td>
 				</tr>
 			</table>
 
